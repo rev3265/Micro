@@ -1,0 +1,44 @@
+ ORG 0000H         
+    JP INICIO         
+LeerTecla:
+    IN A, (P0)         
+    LD B, A           
+    RET
+MostrarEnLEDs:
+    LD A, B            
+    OUT (P1), A        
+    RET
+CalcularParidad:
+    LD A, B           
+    LD C, 0            
+ContarBits:
+    SRL A              
+    JP NC, NoBit       
+    INC C             
+NoBit:
+    LD A, B           
+    CP 0              
+    JP NZ, ContarBits  
+    LD A, C        
+    AND 01H       
+    JP Z, EsPar       
+    LD A, 'I'        
+    JP MostrarParidad  
+EsPar:
+    LD A, 'P'       
+MostrarParidad:
+    OUT (P3), A      
+    RET
+ConvertirYMostrar:
+    LD A, B          
+    OUT (P2), A       
+    RET
+INICIO:
+    DI              
+Bucle:
+    CALL LeerTecla    
+    CALL MostrarEnLEDs 
+    CALL CalcularParidad
+    CALL ConvertirYMostrar
+    JP Bucle          
+    END
